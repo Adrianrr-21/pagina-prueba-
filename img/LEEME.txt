@@ -1,0 +1,10 @@
+Coloca aquí las fotos de la taquería con estos nombres (si falta alguna, la página muestra una imagen de relleno):
+
+logo.png            Logo (cuadrado)
+portada.jpg         Foto principal de la portada
+taco-pastor.jpg, taco-suadero.jpg, taco-bistec.jpg, taco-campechano.jpg
+orden-pastor.jpg, gringa.jpg, volcan.jpg, quesadilla.jpg
+horchata.jpg, jamaica.jpg, refresco.jpg, cerveza.jpg
+galeria-1.jpg ... galeria-6.jpg
+
+Si usas otros nombres, cámbialos en la sección MENU / GALERIA del script de index.html.

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taquería El Fogón | Tacos al pastor, órdenes y más</title>
+  <meta name="description" content="Taquería El Fogón: tacos al pastor, suadero, bistec, órdenes y bebidas. Pide por WhatsApp o visítanos.">
+  <meta name="theme-color" content="#c62828">
+  <style>
+    /* ============ VARIABLES (colores cálidos: rojo, amarillo y negro) ============ */
+    :root {
+      --rojo: #c62828;
+      --rojo-oscuro: #8e1b1b;
+      --amarillo: #ffc107;
+      --amarillo-claro: #fff4d1;
+      --negro: #141414;
+      --gris: #2a2a2a;
+      --texto: #1d1d1d;
+      --texto-suave: #5c5c5c;
+      --fondo: #fffaf0;
+      --blanco: #ffffff;
+      --whatsapp: #25d366;
+      --radio: 14px;
+      --sombra: 0 6px 20px rgba(0, 0, 0, .12);
+      --header-alto: 64px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: var(--header-alto); }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--texto);
+      background: var(--fondo);
+      line-height: 1.55;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    h1, h2, h3 { line-height: 1.15; margin: 0 0 .5em; }
+    .contenedor { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+    section { padding: 56px 0; }
+    .titulo-seccion { text-align: center; font-size: clamp(1.7rem, 5vw, 2.4rem); }
+    .titulo-seccion::after {
+      content: ""; display: block; width: 64px; height: 5px; margin: 12px auto 0;
+      background: var(--amarillo); border-radius: 3px;
+    }
+    .subtitulo { text-align: center; color: var(--texto-suave); margin: 0 auto 32px; max-width: 560px; }
+
+    /* ============ BOTONES ============ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 22px; border-radius: 999px; font-weight: 700; font-size: 1rem;
+      text-decoration: none; border: 2px solid transparent; cursor: pointer;
+      transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:focus-visible { outline: 3px solid var(--amarillo); outline-offset: 3px; }
+    .btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .btn-whatsapp { background: var(--whatsapp); color: #fff; box-shadow: 0 4px 14px rgba(37, 211, 102, .35); }
+    .btn-whatsapp:hover { background: #1ebe5a; }
+    .btn-amarillo { background: var(--amarillo); color: var(--negro); }
+    .btn-amarillo:hover { background: #ffcd38; }
+    .btn-contorno { border-color: #fff; color: #fff; background: transparent; }
+    .btn-contorno:hover { background: rgba(255, 255, 255, .12); }
+
+    /* ============ 1. ENCABEZADO FIJO ============ */
+    .header {
+      position: fixed; inset: 0 0 auto 0; z-index: 100; height: var(--header-alto);
+      background: var(--negro); color: #fff; box-shadow: 0 2px 10px rgba(0, 0, 0, .3);
+    }
+    .header .contenedor { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 1.15rem; }
+    .logo-icono {
+      width: 40px; height: 40px; border-radius: 50%; background: var(--rojo); color: var(--amarillo);
+      display: grid; place-items: center; font-size: 1.3rem; border: 2px solid var(--amarillo);
+      overflow: hidden;
+    }
+    .logo-icono img { width: 100%; height: 100%; object-fit: cover; }
+    .logo span.acento { color: var(--amarillo); }
+
+    .nav { display: none; }
+    .nav a { text-decoration: none; font-weight: 600; padding: 8px 10px; border-radius: 8px; }
+    .nav a:hover { color: var(--amarillo); }
+
+    .header-acciones { display: flex; align-items: center; gap: 8px; }
+    .header .btn-whatsapp { padding: 9px 14px; font-size: .9rem; }
+    .header .btn-whatsapp .texto-largo { display: none; }
+
+    .menu-toggle {
+      width: 44px; height: 44px; border: 0; border-radius: 10px; background: transparent; color: #fff;
+      display: grid; place-items: center; cursor: pointer;
+    }
+    .menu-toggle:focus-visible { outline: 3px solid var(--amarillo); }
+    .menu-toggle span, .menu-toggle span::before, .menu-toggle span::after {
+      display: block; width: 24px; height: 3px; background: currentColor; border-radius: 2px;
+      position: relative; transition: transform .25s ease, background .25s ease;
+    }
+    .menu-toggle span::before, .menu-toggle span::after { content: ""; position: absolute; left: 0; }
+    .menu-toggle span::before { top: -8px; }
+    .menu-toggle span::after { top: 8px; }
+    .menu-toggle[aria-expanded="true"] span { background: transparent; }
+    .menu-toggle[aria-expanded="true"] span::before { transform: translateY(8px) rotate(45deg); }
+    .menu-toggle[aria-expanded="true"] span::after { transform: translateY(-8px) rotate(-45deg); }
+
+    /* Menú desplegable en celular */
+    .nav.abierto {
+      display: flex; flex-direction: column; position: absolute; top: var(--header-alto); left: 0; right: 0;
+      background: var(--negro); padding: 8px 16px 18px; border-top: 3px solid var(--rojo);
+    }
+    .nav.abierto a { padding: 14px 8px; border-bottom: 1px solid #2c2c2c; }
+
+    /* ============ 2. PORTADA ============ */
+    .portada {
+      padding: calc(var(--header-alto) + 32px) 0 48px;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(255, 193, 7, .25), transparent 45%),
+        linear-gradient(160deg, var(--rojo) 0%, var(--rojo-oscuro) 70%, var(--negro) 100%);
+      color: #fff;
+    }
+    .portada .contenedor { display: grid; gap: 28px; align-items: center; }
+    .portada-texto { text-align: center; }
+    .etiqueta {
+      display: inline-block; background: var(--amarillo); color: var(--negro); font-weight: 800;
+      padding: 4px 12px; border-radius: 999px; font-size: .85rem; letter-spacing: .03em; margin-bottom: 14px;
+    }
+    .portada h1 { font-size: clamp(2.2rem, 9vw, 4rem); margin-bottom: .25em; }
+    .portada h1 .acento { color: var(--amarillo); }
+    .frase { font-size: clamp(1.1rem, 4vw, 1.4rem); opacity: .95; margin: 0 0 26px; }
+    .portada-botones { display: flex; flex-direction: column; gap: 12px; }
+    .portada-foto {
+      border-radius: 20px; overflow: hidden; box-shadow: 0 16px 40px rgba(0, 0, 0, .4);
+      border: 4px solid var(--amarillo); aspect-ratio: 4 / 3;
+    }
+    .portada-foto img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ============ 3. MENÚ ============ */
+    .tabs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .tab {
+      border: 2px solid var(--negro); background: transparent; color: var(--negro); font-weight: 700;
+      padding: 10px 18px; border-radius: 999px; cursor: pointer; font-size: .95rem;
+    }
+    .tab[aria-selected="true"] { background: var(--negro); color: var(--amarillo); }
+    .tab:focus-visible { outline: 3px solid var(--amarillo); outline-offset: 2px; }
+
+    .categoria-titulo { font-size: 1.4rem; margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
+    .categoria-titulo::before { content: ""; width: 8px; height: 28px; background: var(--rojo); border-radius: 4px; }
+    .categoria { margin-bottom: 36px; }
+    .categoria[hidden] { display: none; }
+
+    .grid-menu { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    .platillo {
+      background: var(--blanco); border-radius: var(--radio); overflow: hidden; box-shadow: var(--sombra);
+      display: flex; flex-direction: column; transition: transform .2s ease;
+    }
+    .platillo:hover { transform: translateY(-4px); }
+    .platillo-foto { aspect-ratio: 4 / 3; background: var(--amarillo-claro); }
+    .platillo-foto img { width: 100%; height: 100%; object-fit: cover; }
+    .platillo-info { padding: 14px 16px 18px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .platillo-fila { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+    .platillo h4 { margin: 0; font-size: 1.1rem; }
+    .precio {
+      background: var(--rojo); color: #fff; font-weight: 800; padding: 3px 10px; border-radius: 999px;
+      white-space: nowrap; font-size: .95rem;
+    }
+    .platillo p { margin: 0; color: var(--texto-suave); font-size: .93rem; }
+
+    /* ============ 4. GALERÍA ============ */
+    .galeria { background: var(--negro); color: #fff; }
+    .galeria .subtitulo { color: #bdbdbd; }
+    .grid-galeria { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .grid-galeria button {
+      padding: 0; border: 0; border-radius: 10px; overflow: hidden; cursor: zoom-in; aspect-ratio: 1;
+      background: var(--gris);
+    }
+    .grid-galeria button:focus-visible { outline: 3px solid var(--amarillo); outline-offset: 2px; }
+    .grid-galeria img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+    .grid-galeria button:hover img { transform: scale(1.06); }
+
+    .lightbox {
+      border: 0; padding: 0; background: transparent; max-width: min(92vw, 1000px); max-height: 90vh;
+    }
+    .lightbox::backdrop { background: rgba(0, 0, 0, .88); }
+    .lightbox img { max-height: 82vh; width: auto; margin: 0 auto; border-radius: 10px; }
+    .lightbox-cerrar {
+      position: fixed; top: 14px; right: 14px; width: 46px; height: 46px; border-radius: 50%; border: 0;
+      background: var(--amarillo); color: var(--negro); font-size: 1.6rem; font-weight: 800; cursor: pointer;
+    }
+
+    /* ============ 5. RESEÑAS ============ */
+    .grid-resenas { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    .resena {
+      background: var(--blanco); border-radius: var(--radio); padding: 22px; box-shadow: var(--sombra);
+      border-top: 5px solid var(--amarillo); margin: 0;
+    }
+    .estrellas { color: var(--amarillo); font-size: 1.25rem; letter-spacing: 2px; margin-bottom: 8px; }
+    .estrellas .vacia { color: #ddd; }
+    .resena blockquote { margin: 0 0 14px; font-style: italic; }
+    .resena figcaption { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    .avatar {
+      width: 40px; height: 40px; border-radius: 50%; background: var(--rojo); color: #fff;
+      display: grid; place-items: center; font-weight: 800;
+    }
+    .resena small { display: block; color: var(--texto-suave); font-weight: 400; }
+    .calificacion-global { text-align: center; margin-bottom: 28px; font-weight: 700; }
+    .calificacion-global .estrellas { font-size: 1.6rem; margin-bottom: 0; }
+
+    /* ============ 6. HORARIO Y UBICACIÓN ============ */
+    .ubicacion { background: var(--amarillo-claro); }
+    .ubicacion-grid { display: grid; grid-template-columns: 1fr; gap: 22px; }
+    .tarjeta-info {
+      background: var(--blanco); border-radius: var(--radio); padding: 24px; box-shadow: var(--sombra);
+    }
+    .tarjeta-info h3 { display: flex; align-items: center; gap: 8px; font-size: 1.25rem; }
+    .tabla-horario { width: 100%; border-collapse: collapse; margin-bottom: 22px; }
+    .tabla-horario td { padding: 9px 0; border-bottom: 1px dashed #e3d6b0; }
+    .tabla-horario td:last-child { text-align: right; font-weight: 700; }
+    .tabla-horario tr.hoy td { color: var(--rojo); }
+    .estado { display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: .9rem; margin-bottom: 14px; }
+    .estado.abierto { background: #e3f8ea; color: #12793a; }
+    .estado.cerrado { background: #fde4e4; color: var(--rojo-oscuro); }
+    .direccion { margin: 0 0 18px; }
+    .mapa {
+      border-radius: var(--radio); overflow: hidden; box-shadow: var(--sombra); min-height: 320px;
+      background: #e9e2cf;
+    }
+    .mapa iframe { width: 100%; height: 100%; min-height: 320px; border: 0; display: block; }
+
+    /* ============ 7. LLAMADO FINAL ============ */
+    .cta-final {
+      background: linear-gradient(135deg, var(--rojo), var(--rojo-oscuro)); color: #fff; text-align: center;
+    }
+    .cta-final h2 { font-size: clamp(1.8rem, 6vw, 2.6rem); }
+    .cta-final p { font-size: 1.1rem; margin: 0 auto 26px; max-width: 560px; opacity: .95; }
+    .cta-final .btn { font-size: 1.15rem; padding: 16px 30px; }
+
+    /* ============ 8. PIE DE PÁGINA ============ */
+    .footer { background: var(--negro); color: #cfcfcf; padding: 44px 0 100px; }
+    .footer-grid { display: grid; gap: 26px; text-align: center; }
+    .footer h4 { color: var(--amarillo); margin: 0 0 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: .06em; }
+    .footer a { text-decoration: none; }
+    .footer a:hover { color: var(--amarillo); }
+    .redes { display: flex; justify-content: center; gap: 12px; }
+    .redes a {
+      width: 44px; height: 44px; border-radius: 50%; background: var(--gris); display: grid; place-items: center;
+      transition: background .2s ease;
+    }
+    .redes a:hover { background: var(--rojo); }
+    .redes svg { width: 22px; height: 22px; fill: #fff; }
+    .footer-legal {
+      border-top: 1px solid #2c2c2c; margin-top: 30px; padding-top: 20px; text-align: center; font-size: .9rem;
+    }
+    .footer-legal button {
+      background: none; border: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; padding: 0;
+    }
+    .footer-legal button:hover { color: var(--amarillo); }
+
+    /* Aviso de privacidad */
+    .aviso {
+      border: 0; border-radius: var(--radio); padding: 0; max-width: 680px; width: calc(100% - 32px);
+      max-height: 85vh;
+    }
+    .aviso::backdrop { background: rgba(0, 0, 0, .7); }
+    .aviso-contenido { padding: 26px 22px; }
+    .aviso h2 { color: var(--rojo); }
+    .aviso h3 { font-size: 1.05rem; margin-top: 1.2em; }
+    .aviso p, .aviso li { font-size: .95rem; color: var(--texto-suave); }
+
+    /* ============ BOTÓN FLOTANTE WHATSAPP ============ */
+    .wa-flotante {
+      position: fixed; right: 16px; bottom: 16px; z-index: 200; width: 60px; height: 60px; border-radius: 50%;
+      background: var(--whatsapp); display: grid; place-items: center; box-shadow: 0 6px 20px rgba(0, 0, 0, .3);
+      animation: pulso 2.4s infinite;
+    }
+    .wa-flotante svg { width: 32px; height: 32px; fill: #fff; }
+    .wa-flotante:focus-visible { outline: 3px solid var(--amarillo); outline-offset: 3px; }
+    @keyframes pulso {
+      0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, .55); }
+      70% { box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+
+    /* ============ TABLET (≥ 600px) ============ */
+    @media (min-width: 600px) {
+      .grid-menu { grid-template-columns: repeat(2, 1fr); }
+      .grid-galeria { grid-template-columns: repeat(3, 1fr); }
+      .grid-resenas { grid-template-columns: repeat(2, 1fr); }
+      .portada-botones { flex-direction: row; justify-content: center; }
+      .header .btn-whatsapp .texto-largo { display: inline; }
+      .footer-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* ============ LAPTOP / COMPUTADORA (≥ 960px) ============ */
+    @media (min-width: 960px) {
+      :root { --header-alto: 72px; }
+      section { padding: 80px 0; }
+      .menu-toggle { display: none; }
+      .nav, .nav.abierto {
+        display: flex; flex-direction: row; position: static; padding: 0; border: 0; background: none; gap: 4px;
+      }
+      .nav.abierto a { padding: 8px 10px; border: 0; }
+
+      .portada { padding: calc(var(--header-alto) + 60px) 0 80px; }
+      .portada .contenedor { grid-template-columns: 1fr 1fr; gap: 48px; }
+      .portada-texto { text-align: left; }
+      .portada-botones { justify-content: flex-start; }
+
+      .grid-menu { grid-template-columns: repeat(3, 1fr); }
+      .grid-galeria { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .grid-galeria button:first-child { grid-column: span 2; grid-row: span 2; }
+      .grid-resenas { grid-template-columns: repeat(3, 1fr); }
+      .ubicacion-grid { grid-template-columns: 1fr 1.3fr; align-items: stretch; }
+      .mapa iframe { min-height: 100%; }
+      .footer { padding-bottom: 44px; }
+      .footer-grid { text-align: left; }
+      .redes { justify-content: flex-start; }
+    }
+
+    @media (min-width: 1140px) {
+      .grid-menu { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Iconos SVG reutilizables -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35M12.05 21.5h-.01a9.4 9.4 0 0 1-4.8-1.32l-.34-.2-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.23-9.43 9.44-9.43a9.38 9.38 0 0 1 9.42 9.44c0 5.2-4.23 9.43-9.43 9.43m8.03-17.46A11.3 11.3 0 0 0 12.05.7C5.79.7.7 5.79.7 12.04c0 2 .52 3.95 1.52 5.67L.6 23.3l5.71-1.5a11.3 11.3 0 0 0 5.73 1.47h.01c6.25 0 11.34-5.09 11.35-11.34 0-3.03-1.18-5.88-3.32-8.02"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5"/></symbol>
+  </svg>
+
+  <!-- ============ 1. ENCABEZADO ============ -->
+  <header class="header">
+    <div class="contenedor">
+      <a href="#inicio" class="logo" aria-label="Ir al inicio">
+        <span class="logo-icono"><img src="img/logo.png" alt="" data-fallback="emoji"></span>
+        <span data-config="nombre">Taquería El Fogón</span>
+      </a>
+
+      <nav class="nav" id="nav" aria-label="Secciones">
+        <a href="#menu">Menú</a>
+        <a href="#galeria">Galería</a>
+        <a href="#resenas">Reseñas</a>
+        <a href="#ubicacion">Horario y ubicación</a>
+      </nav>
+
+      <div class="header-acciones">
+        <a class="btn btn-whatsapp js-wa" href="#" target="_blank" rel="noopener" aria-label="Pedir por WhatsApp">
+          <svg><use href="#i-wa"/></svg><span class="texto-largo">WhatsApp</span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav"><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ 2. PORTADA ============ -->
+    <section class="portada" id="inicio">
+      <div class="contenedor">
+        <div class="portada-texto">
+          <span class="etiqueta">🌮 Tacos al carbón y al pastor</span>
+          <h1 data-config="nombre">Taquería El Fogón</h1>
+          <p class="frase" data-config="frase">“El sabor que te hace volver”</p>
+          <div class="portada-botones">
+            <a class="btn btn-whatsapp js-wa" href="#" target="_blank" rel="noopener">
+              <svg><use href="#i-wa"/></svg> Pedir por WhatsApp
+            </a>
+            <a class="btn btn-contorno js-llegar" href="#" target="_blank" rel="noopener">
+              <svg><use href="#i-pin"/></svg> Cómo llegar
+            </a>
+          </div>
+        </div>
+        <div class="portada-foto">
+          <img src="img/portada.jpg" alt="Tacos al pastor recién servidos con piña, cebolla y cilantro"
+               data-fallback="Tacos" width="1200" height="900" fetchpriority="high">
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3. MENÚ ============ -->
+    <section id="menu">
+      <div class="contenedor">
+        <h2 class="titulo-seccion">Nuestro menú</h2>
+        <p class="subtitulo">Tortillas hechas a mano, salsas de la casa y carne al carbón todos los días.</p>
+
+        <div class="tabs" role="tablist" aria-label="Categorías del menú">
+          <button class="tab" role="tab" aria-selected="true" data-filtro="todo">Todo</button>
+          <button class="tab" role="tab" aria-selected="false" data-filtro="tacos">Tacos</button>
+          <button class="tab" role="tab" aria-selected="false" data-filtro="ordenes">Órdenes</button>
+          <button class="tab" role="tab" aria-selected="false" data-filtro="bebidas">Bebidas</button>
+        </div>
+
+        <!-- Los platillos se generan desde la lista MENU en el script (fácil de editar) -->
+        <div id="menu-categorias"></div>
+      </div>
+    </section>
+
+    <!-- ============ 4. GALERÍA ============ -->
+    <section class="galeria" id="galeria">
+      <div class="contenedor">
+        <h2 class="titulo-seccion">Galería</h2>
+        <p class="subtitulo">Así se vive el sabor en nuestra taquería.</p>
+        <div class="grid-galeria" id="grid-galeria"></div>
+      </div>
+      <dialog class="lightbox" id="lightbox" aria-label="Foto ampliada">
+        <button class="lightbox-cerrar" aria-label="Cerrar">×</button>
+        <img src="" alt="">
+      </dialog>
+    </section>
+
+    <!-- ============ 5. RESEÑAS ============ -->
+    <section id="resenas">
+      <div class="contenedor">
+        <h2 class="titulo-seccion">Lo que dicen nuestros clientes</h2>
+        <div class="calificacion-global">
+          <div class="estrellas" aria-hidden="true">★★★★★</div>
+          4.8 de 5 · más de 300 reseñas
+        </div>
+        <div class="grid-resenas" id="grid-resenas"></div>
+      </div>
+    </section>
+
+    <!-- ============ 6. HORARIO Y UBICACIÓN ============ -->
+    <section class="ubicacion" id="ubicacion">
+      <div class="contenedor">
+        <h2 class="titulo-seccion">Horario y ubicación</h2>
+        <p class="subtitulo">Ven a comer con nosotros o pide para llevar.</p>
+        <div class="ubicacion-grid">
+          <div class="tarjeta-info">
+            <h3>🕒 Horario</h3>
+            <span class="estado" id="estado" hidden></span>
+            <table class="tabla-horario" id="tabla-horario"></table>
+
+            <h3>📍 Dirección</h3>
+            <p class="direccion" data-config="direccion">Av. Revolución 123, Col. Centro, Ciudad de México</p>
+            <a class="btn btn-amarillo js-llegar" href="#" target="_blank" rel="noopener">
+              <svg><use href="#i-pin"/></svg> Cómo llegar
+            </a>
+          </div>
+          <div class="mapa">
+            <iframe id="mapa" title="Mapa de ubicación de la taquería" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 7. LLAMADO FINAL ============ -->
+    <section class="cta-final">
+      <div class="contenedor">
+        <h2>¿Ya se te antojaron?</h2>
+        <p>Haz tu pedido por WhatsApp y pasa por él o recíbelo en tu casa. ¡Rápido y calientito!</p>
+        <a class="btn btn-whatsapp js-wa" href="#" target="_blank" rel="noopener">
+          <svg><use href="#i-wa"/></svg> Pedir por WhatsApp
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ 8. PIE DE PÁGINA ============ -->
+  <footer class="footer">
+    <div class="contenedor">
+      <div class="footer-grid">
+        <div>
+          <h4 data-config="nombre">Taquería El Fogón</h4>
+          <p data-config="frase" style="margin:0">“El sabor que te hace volver”</p>
+        </div>
+        <div>
+          <h4>Contacto</h4>
+          <p style="margin:0 0 6px">📞 <a class="js-tel" href="#" data-config="telefonoVisible">55 1234 5678</a></p>
+          <p style="margin:0" data-config="direccion">Av. Revolución 123, Col. Centro, Ciudad de México</p>
+        </div>
+        <div>
+          <h4>Síguenos</h4>
+          <div class="redes">
+            <a class="js-red" data-red="facebook" href="#" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M14 8V6.2c0-.8.2-1.2 1.4-1.2H17V2h-2.6C11.3 2 10 3.5 10 6v2H8v3h2v11h4V11h2.7l.3-3z"/></svg>
+            </a>
+            <a class="js-red" data-red="instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24"><path d="M12 7.3A4.7 4.7 0 1 0 12 16.7 4.7 4.7 0 0 0 12 7.3m0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0M21.9 8c-.1-1.6-.4-3-1.6-4.2S17.6 2.2 16 2.1C14.4 2 9.6 2 8 2.1 6.4 2.2 5 2.5 3.8 3.7S2.2 6.4 2.1 8C2 9.6 2 14.4 2.1 16c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 6.4.1 8 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-6.4 0-8m-2.1 10.2a3.2 3.2 0 0 1-1.8 1.8c-1.3.5-4.3.4-5.7.4s-4.4.1-5.7-.4a3.2 3.2 0 0 1-1.8-1.8c-.5-1.3-.4-4.3-.4-5.7s-.1-4.4.4-5.7A3.2 3.2 0 0 1 6.3 5c1.3-.5 4.3-.4 5.7-.4s4.4-.1 5.7.4a3.2 3.2 0 0 1 1.8 1.8c.5 1.3.4 4.3.4 5.7s.1 4.4-.4 5.7"/></svg>
+            </a>
+            <a class="js-red" data-red="tiktok" href="#" target="_blank" rel="noopener" aria-label="TikTok">
+              <svg viewBox="0 0 24 24"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 1 0 4.9 5.7V9.1a7.4 7.4 0 0 0 4.3 1.4V7.4s-1.9.1-3.2-1.6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-legal">
+        © <span id="anio">2026</span> <span data-config="nombre">Taquería El Fogón</span>. Todos los derechos reservados ·
+        <a href="#aviso-privacidad" id="abrir-aviso">Aviso de privacidad</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Aviso de privacidad (ventana emergente) -->
+  <dialog class="aviso" id="aviso-privacidad" aria-labelledby="aviso-titulo">
+    <div class="aviso-contenido">
+      <h2 id="aviso-titulo">Aviso de privacidad</h2>
+      <p><strong data-config="nombre">Taquería El Fogón</strong>, con domicilio en <span data-config="direccion">Av. Revolución 123, Col. Centro, Ciudad de México</span>, es responsable del uso y protección de tus datos personales, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.</p>
+      <h3>¿Qué datos recabamos?</h3>
+      <p>Únicamente nombre, número de teléfono y, en su caso, dirección de entrega, que tú nos proporcionas al hacer un pedido por WhatsApp.</p>
+      <h3>¿Para qué los usamos?</h3>
+      <ul>
+        <li>Atender y entregar tu pedido.</li>
+        <li>Contactarte en caso de dudas sobre tu pedido.</li>
+      </ul>
+      <p>No vendemos ni compartimos tus datos con terceros.</p>
+      <h3>Derechos ARCO</h3>
+      <p>Puedes solicitar el acceso, rectificación, cancelación u oposición al uso de tus datos escribiéndonos por WhatsApp al <span data-config="telefonoVisible">55 1234 5678</span>.</p>
+      <p><small>Última actualización: <span id="aviso-anio">2026</span>.</small></p>
+      <form method="dialog"><button class="btn btn-amarillo" style="margin-top:8px">Entendido</button></form>
+    </div>
+  </dialog>
+
+  <!-- ============ BOTÓN FLOTANTE WHATSAPP ============ -->
+  <a class="wa-flotante js-wa" href="#" target="_blank" rel="noopener" aria-label="Pedir por WhatsApp">
+    <svg><use href="#i-wa"/></svg>
+  </a>
+
+  <script>
+    /* =====================================================================
+       CONFIGURACIÓN — cambia aquí los datos de tu taquería
+       ===================================================================== */
+    const CONFIG = {
+      nombre: "Taquería El Fogón",
+      frase: "“El sabor que te hace volver”",
+      whatsapp: "5512345678",               // 10 dígitos, sin el 52 (se agrega solo)
+      telefonoVisible: "55 1234 5678",
+      mensajeWhatsApp: "¡Hola! Quiero hacer un pedido 🌮",
+      direccion: "Av. Revolución 123, Col. Centro, Ciudad de México",
+      redes: {
+        facebook: "https://facebook.com/",
+        instagram: "https://instagram.com/",
+        tiktok: "https://tiktok.com/"
+      },
+      // Horario: [abre, cierra] en formato 24 h; null = cerrado. 0 = domingo
+      horario: {
+        1: ["13:00", "23:00"], 2: ["13:00", "23:00"], 3: ["13:00", "23:00"],
+        4: ["13:00", "23:00"], 5: ["13:00", "01:00"], 6: ["13:00", "01:00"],
+        0: ["13:00", "22:00"]
+      }
+    };
+
+    /* Menú: cambia nombres, precios y fotos (en la carpeta img/) */
+    const MENU = {
+      tacos: {
+        titulo: "🌮 Tacos",
+        items: [
+          { nombre: "Taco al pastor", precio: 22, desc: "Con piña, cebolla y cilantro.", img: "img/taco-pastor.jpg" },
+          { nombre: "Taco de suadero", precio: 22, desc: "Suavecito y bien doradito.", img: "img/taco-suadero.jpg" },
+          { nombre: "Taco de bistec", precio: 25, desc: "Res al carbón con cebollita asada.", img: "img/taco-bistec.jpg" },
+          { nombre: "Taco campechano", precio: 26, desc: "Bistec con longaniza.", img: "img/taco-campechano.jpg" }
+        ]
+      },
+      ordenes: {
+        titulo: "🍽️ Órdenes",
+        items: [
+          { nombre: "Orden de pastor (5)", precio: 100, desc: "Cinco tacos con todo.", img: "img/orden-pastor.jpg" },
+          { nombre: "Gringa", precio: 65, desc: "Tortilla de harina, pastor y queso.", img: "img/gringa.jpg" },
+          { nombre: "Volcán", precio: 35, desc: "Tostada con queso gratinado y carne.", img: "img/volcan.jpg" },
+          { nombre: "Quesadilla de bistec", precio: 55, desc: "Tortilla de maíz con queso Oaxaca.", img: "img/quesadilla.jpg" }
+        ]
+      },
+      bebidas: {
+        titulo: "🥤 Bebidas",
+        items: [
+          { nombre: "Agua de horchata", precio: 30, desc: "Vaso de 1/2 litro.", img: "img/horchata.jpg" },
+          { nombre: "Agua de jamaica", precio: 30, desc: "Vaso de 1/2 litro.", img: "img/jamaica.jpg" },
+          { nombre: "Refresco", precio: 28, desc: "Varios sabores, 355 ml.", img: "img/refresco.jpg" },
+          { nombre: "Cerveza", precio: 45, desc: "Nacional, 355 ml.", img: "img/cerveza.jpg" }
+        ]
+      }
+    };
+
+    const GALERIA = [
+      { img: "img/galeria-1.jpg", alt: "Trompo de pastor girando" },
+      { img: "img/galeria-2.jpg", alt: "Taquero preparando tacos" },
+      { img: "img/galeria-3.jpg", alt: "Salsas de la casa" },
+      { img: "img/galeria-4.jpg", alt: "Interior de la taquería" },
+      { img: "img/galeria-5.jpg", alt: "Orden de tacos servida" },
+      { img: "img/galeria-6.jpg", alt: "Clientes disfrutando" }
+    ];
+
+    const RESENAS = [
+      { nombre: "Mariana G.", estrellas: 5, fecha: "Hace 1 semana", texto: "Los mejores tacos al pastor de la zona. La salsa verde está buenísima y te atienden rapidísimo." },
+      { nombre: "Jorge R.", estrellas: 5, fecha: "Hace 2 semanas", texto: "Pedí por WhatsApp y llegó todo calientito. Las gringas son una delicia." },
+      { nombre: "Ana L.", estrellas: 4, fecha: "Hace 1 mes", texto: "Muy buen sabor y precios justos. Los fines de semana se llena, pero vale la pena esperar." }
+    ];
+
+    /* =====================================================================
+       A partir de aquí no necesitas cambiar nada
+       ===================================================================== */
+    const $ = (s, c = document) => c.querySelector(s);
+    const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    // Imagen de relleno si la foto no existe en img/
+    function relleno(texto, w = 800, h = 600) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc107"/><stop offset="1" stop-color="#c62828"/></linearGradient></defs>
+        <rect width="100%" height="100%" fill="url(#g)"/>
+        <text x="50%" y="44%" font-size="${Math.round(h / 4)}" text-anchor="middle" dominant-baseline="middle">🌮</text>
+        <text x="50%" y="74%" font-family="Arial, sans-serif" font-weight="700" font-size="${Math.round(h / 14)}" fill="#141414" text-anchor="middle">${esc(texto)}</text>
+      </svg>`;
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    }
+    function activarRelleno(img) {
+      const usarRelleno = () => {
+        if (img.dataset.relleno) return;
+        img.dataset.relleno = "1";
+        if (img.dataset.fallback === "emoji") { img.replaceWith("🌮"); return; }
+        img.src = relleno(img.dataset.fallback || img.alt || CONFIG.nombre);
+      };
+      img.addEventListener("error", usarRelleno);
+      if (img.complete && img.naturalWidth === 0) usarRelleno();
+    }
+    const imgHTML = (src, alt) =>
+      `<img src="${esc(src)}" alt="${esc(alt)}" data-fallback="${esc(alt)}" loading="lazy" width="800" height="600">`;
+
+    // Datos de configuración en la página
+    $$("[data-config]").forEach(el => { el.textContent = CONFIG[el.dataset.config]; });
+    document.title = `${CONFIG.nombre} | Tacos al pastor, órdenes y más`;
+
+    // Enlaces
+    const urlWA = `https://wa.me/52${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.mensajeWhatsApp)}`;
+    const destino = encodeURIComponent(CONFIG.direccion);
+    $$(".js-wa").forEach(a => a.href = urlWA);
+    $$(".js-llegar").forEach(a => a.href = `https://www.google.com/maps/dir/?api=1&destination=${destino}`);
+    $$(".js-tel").forEach(a => a.href = `tel:+52${CONFIG.whatsapp}`);
+    $$(".js-red").forEach(a => a.href = CONFIG.redes[a.dataset.red] || "#");
+    $("#mapa").src = `https://www.google.com/maps?q=${destino}&output=embed`;
+
+    // Menú
+    $("#menu-categorias").innerHTML = Object.entries(MENU).map(([id, cat]) => `
+      <div class="categoria" data-categoria="${id}">
+        <h3 class="categoria-titulo">${esc(cat.titulo)}</h3>
+        <div class="grid-menu">
+          ${cat.items.map(p => `
+            <article class="platillo">
+              <div class="platillo-foto">${imgHTML(p.img, p.nombre)}</div>
+              <div class="platillo-info">
+                <div class="platillo-fila"><h4>${esc(p.nombre)}</h4><span class="precio">$${p.precio}</span></div>
+                <p>${esc(p.desc)}</p>
+              </div>
+            </article>`).join("")}
+        </div>
+      </div>`).join("");
+
+    $$(".tab").forEach(tab => tab.addEventListener("click", () => {
+      $$(".tab").forEach(t => t.setAttribute("aria-selected", t === tab));
+      const f = tab.dataset.filtro;
+      $$(".categoria").forEach(c => c.hidden = f !== "todo" && c.dataset.categoria !== f);
+    }));
+
+    // Galería + visor
+    $("#grid-galeria").innerHTML = GALERIA.map((g, i) =>
+      `<button type="button" data-i="${i}" aria-label="Ampliar: ${esc(g.alt)}">${imgHTML(g.img, g.alt)}</button>`).join("");
+    const lightbox = $("#lightbox");
+    $("#grid-galeria").addEventListener("click", e => {
+      const btn = e.target.closest("button"); if (!btn) return;
+      const original = $("img", btn);
+      const img = $("img", lightbox);
+      img.src = original.currentSrc || original.src; img.alt = original.alt;
+      lightbox.showModal();
+    });
+    $(".lightbox-cerrar").addEventListener("click", () => lightbox.close());
+    lightbox.addEventListener("click", e => { if (e.target === lightbox) lightbox.close(); });
+
+    // Reseñas
+    $("#grid-resenas").innerHTML = RESENAS.map(r => `
+      <figure class="resena">
+        <div class="estrellas" role="img" aria-label="${r.estrellas} de 5 estrellas">${"★".repeat(r.estrellas)}<span class="vacia">${"★".repeat(5 - r.estrellas)}</span></div>
+        <blockquote>“${esc(r.texto)}”</blockquote>
+        <figcaption><span class="avatar">${esc(r.nombre[0])}</span><span>${esc(r.nombre)}<small>${esc(r.fecha)}</small></span></figcaption>
+      </figure>`).join("");
+
+    // Horario + estado abierto/cerrado
+    const DIAS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const hoy = new Date().getDay();
+    $("#tabla-horario").innerHTML = [1, 2, 3, 4, 5, 6, 0].map(d => {
+      const h = CONFIG.horario[d];
+      return `<tr class="${d === hoy ? "hoy" : ""}"><td>${DIAS[d]}${d === hoy ? " (hoy)" : ""}</td><td>${h ? `${h[0]} – ${h[1]}` : "Cerrado"}</td></tr>`;
+    }).join("");
+
+    function estaAbierto(ahora = new Date()) {
+      const min = t => { const [hh, mm] = t.split(":").map(Number); return hh * 60 + mm; };
+      const actual = ahora.getHours() * 60 + ahora.getMinutes();
+      const d = ahora.getDay();
+      const h = CONFIG.horario[d];
+      if (h) {
+        const [a, c] = h.map(min);
+        if (c > a ? actual >= a && actual < c : actual >= a) return true;
+      }
+      // Horario de ayer que cruza la medianoche (p. ej. 13:00 – 01:00)
+      const ay = CONFIG.horario[(d + 6) % 7];
+      if (ay) { const [a, c] = ay.map(min); if (c <= a && actual < c) return true; }
+      return false;
+    }
+    const estado = $("#estado");
+    const abierto = estaAbierto();
+    estado.hidden = false;
+    estado.className = "estado " + (abierto ? "abierto" : "cerrado");
+    estado.textContent = abierto ? "● Abierto ahora" : "● Cerrado ahora";
+
+    // Menú celular
+    const toggle = $(".menu-toggle"), nav = $("#nav");
+    toggle.addEventListener("click", () => {
+      const abrir = !nav.classList.contains("abierto");
+      nav.classList.toggle("abierto", abrir);
+      toggle.setAttribute("aria-expanded", abrir);
+      toggle.setAttribute("aria-label", abrir ? "Cerrar menú" : "Abrir menú");
+    });
+    $$("#nav a").forEach(a => a.addEventListener("click", () => {
+      nav.classList.remove("abierto"); toggle.setAttribute("aria-expanded", "false");
+    }));
+
+    // Aviso de privacidad
+    const aviso = $("#aviso-privacidad");
+    $("#abrir-aviso").addEventListener("click", e => { e.preventDefault(); aviso.showModal(); });
+    aviso.addEventListener("click", e => { if (e.target === aviso) aviso.close(); });
+    if (location.hash === "#aviso-privacidad") aviso.showModal();
+
+    // Año
+    const anio = new Date().getFullYear();
+    $("#anio").textContent = anio; $("#aviso-anio").textContent = anio;
+
+    // Fotos de relleno
+    $$("img").forEach(activarRelleno);
+  </script>
+</body>
+</html>
