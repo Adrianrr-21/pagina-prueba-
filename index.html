@@ -201,8 +201,56 @@
       display: grid; place-items: center; font-weight: 800;
     }
     .resena small { display: block; color: var(--texto-suave); font-weight: 400; }
-    .calificacion-global { text-align: center; margin-bottom: 28px; font-weight: 700; }
+    .calificacion-global { text-align: center; margin-bottom: 20px; font-weight: 700; }
     .calificacion-global .estrellas { font-size: 1.6rem; margin-bottom: 0; }
+    .estrellas-parcial { position: relative; display: inline-block; color: #ddd; }
+    .estrellas-parcial span { position: absolute; inset: 0 auto 0 0; overflow: hidden; white-space: nowrap; color: var(--amarillo); }
+    .resenas-acciones { text-align: center; margin-bottom: 28px; }
+    .btn-negro { background: var(--negro); color: var(--amarillo); }
+    .btn-negro:hover { background: var(--gris); }
+    .resena.nueva { animation: aparecer .5s ease; }
+    @keyframes aparecer { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    .ver-mas { text-align: center; margin-top: 24px; }
+    .ver-mas[hidden] { display: none; }
+
+    /* Formulario de reseña */
+    .form-resena {
+      background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra); padding: 22px 18px;
+      max-width: 640px; margin: 0 auto 32px; border-top: 5px solid var(--rojo);
+    }
+    .form-resena[hidden] { display: none; }
+    .form-resena h3 { font-size: 1.25rem; }
+    .campo { margin-bottom: 16px; }
+    .campo label, .campo legend { display: block; font-weight: 700; margin-bottom: 6px; }
+    .campo input[type="text"], .campo textarea {
+      width: 100%; font: inherit; padding: 12px 14px; border: 2px solid #e2d7bd; border-radius: 10px;
+      background: var(--fondo); color: var(--texto);
+    }
+    .campo input[type="text"]:focus, .campo textarea:focus { outline: none; border-color: var(--amarillo); }
+    .campo textarea { min-height: 110px; resize: vertical; }
+    .contador { display: block; text-align: right; font-size: .82rem; color: var(--texto-suave); margin-top: 4px; }
+    fieldset.campo { border: 0; padding: 0; margin: 0 0 16px; min-width: 0; }
+
+    /* Estrellas interactivas (de derecha a izquierda para que el hover pinte las anteriores) */
+    .selector-estrellas { display: inline-flex; flex-direction: row-reverse; gap: 2px; }
+    .selector-estrellas input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .selector-estrellas label {
+      font-size: 2.4rem; line-height: 1; color: #d9d9d9; cursor: pointer; padding: 2px 3px; margin: 0;
+      transition: color .15s ease, transform .15s ease;
+    }
+    .selector-estrellas label:hover, .selector-estrellas label:hover ~ label,
+    .selector-estrellas input:checked ~ label { color: var(--amarillo); }
+    .selector-estrellas label:hover { transform: scale(1.18); }
+    .selector-estrellas input:focus-visible + label { outline: 3px solid var(--rojo); outline-offset: 2px; border-radius: 6px; }
+    .texto-calificacion { display: inline-block; margin-left: 10px; font-weight: 700; color: var(--rojo); vertical-align: super; }
+    .trampa { position: absolute; left: -9999px; }
+    .form-botones { display: flex; gap: 10px; flex-wrap: wrap; }
+    .form-error { color: var(--rojo-oscuro); font-weight: 700; margin: 0 0 12px; }
+    .form-ok {
+      background: #e3f8ea; color: #12793a; font-weight: 700; padding: 12px 16px; border-radius: 10px;
+      max-width: 640px; margin: 0 auto 24px; text-align: center;
+    }
+    .form-ok[hidden], .form-error[hidden] { display: none; }
 
     /* ============ 6. HORARIO Y UBICACIÓN ============ */
     .ubicacion { background: var(--amarillo-claro); }
@@ -234,7 +282,7 @@
     .cta-final .btn { font-size: 1.15rem; padding: 16px 30px; }
 
     /* ============ 8. PIE DE PÁGINA ============ */
-    .footer { background: var(--negro); color: #cfcfcf; padding: 44px 0 100px; }
+    .footer { background: var(--negro); color: #cfcfcf; padding: 44px 0 150px; }
     .footer-grid { display: grid; gap: 26px; text-align: center; }
     .footer h4 { color: var(--amarillo); margin: 0 0 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: .06em; }
     .footer a { text-decoration: none; }
@@ -266,6 +314,13 @@
     .aviso p, .aviso li { font-size: .95rem; color: var(--texto-suave); }
 
     /* ============ BOTÓN FLOTANTE WHATSAPP ============ */
+    /* ============ FUEGO / CARBONES FIJOS AL BORDE INFERIOR ============ */
+    .fuego {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; width: 100%; height: 120px;
+      pointer-events: none; display: block;
+    }
+    @media (min-width: 960px) { .fuego { height: 170px; } }
+
     .wa-flotante {
       position: fixed; right: 16px; bottom: 16px; z-index: 200; width: 60px; height: 60px; border-radius: 50%;
       background: var(--whatsapp); display: grid; place-items: center; box-shadow: 0 6px 20px rgba(0, 0, 0, .3);
@@ -314,7 +369,7 @@
       .grid-resenas { grid-template-columns: repeat(3, 1fr); }
       .ubicacion-grid { grid-template-columns: 1fr 1.3fr; align-items: stretch; }
       .mapa iframe { min-height: 100%; }
-      .footer { padding-bottom: 44px; }
+      .footer { padding-bottom: 190px; }
       .footer-grid { text-align: left; }
       .redes { justify-content: flex-start; }
     }
@@ -416,10 +471,53 @@
       <div class="contenedor">
         <h2 class="titulo-seccion">Lo que dicen nuestros clientes</h2>
         <div class="calificacion-global">
-          <div class="estrellas" aria-hidden="true">★★★★★</div>
-          4.8 de 5 · más de 300 reseñas
+          <div class="estrellas"><span class="estrellas-parcial" id="promedio-estrellas" role="img">★★★★★<span>★★★★★</span></span></div>
+          <span id="promedio-texto"></span>
         </div>
+
+        <div class="resenas-acciones">
+          <button type="button" class="btn btn-negro" id="abrir-form" aria-expanded="false" aria-controls="form-resena">
+            ✍️ Escribir una reseña
+          </button>
+        </div>
+
+        <p class="form-ok" id="form-ok" role="status" hidden>¡Gracias por tu reseña! 🌮</p>
+
+        <form class="form-resena" id="form-resena" hidden novalidate>
+          <h3>Cuéntanos tu experiencia</h3>
+          <fieldset class="campo">
+            <legend>Tu calificación</legend>
+            <div class="selector-estrellas" id="selector-estrellas">
+              <input type="radio" name="estrellas" id="e5" value="5"><label for="e5" title="Excelente" aria-label="5 estrellas, excelente">★</label>
+              <input type="radio" name="estrellas" id="e4" value="4"><label for="e4" title="Muy bueno" aria-label="4 estrellas, muy bueno">★</label>
+              <input type="radio" name="estrellas" id="e3" value="3"><label for="e3" title="Bueno" aria-label="3 estrellas, bueno">★</label>
+              <input type="radio" name="estrellas" id="e2" value="2"><label for="e2" title="Regular" aria-label="2 estrellas, regular">★</label>
+              <input type="radio" name="estrellas" id="e1" value="1"><label for="e1" title="Malo" aria-label="1 estrella, malo">★</label>
+            </div>
+            <span class="texto-calificacion" id="texto-calificacion" aria-live="polite"></span>
+          </fieldset>
+          <div class="campo">
+            <label for="r-nombre">Tu nombre</label>
+            <input type="text" id="r-nombre" name="nombre" maxlength="40" autocomplete="given-name" placeholder="Ej. Mariana G." required>
+          </div>
+          <div class="campo">
+            <label for="r-texto">Tu comentario</label>
+            <textarea id="r-texto" name="texto" maxlength="500" placeholder="¿Qué pediste? ¿Qué te gustó?" required></textarea>
+            <span class="contador" id="contador">0 / 500</span>
+          </div>
+          <!-- Campo trampa contra robots de spam: las personas no lo ven -->
+          <input class="trampa" type="text" name="sitio" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <p class="form-error" id="form-error" role="alert" hidden></p>
+          <div class="form-botones">
+            <button type="submit" class="btn btn-amarillo" id="enviar-resena">Publicar reseña</button>
+            <button type="button" class="btn" id="cancelar-resena" style="border-color:#ccc">Cancelar</button>
+          </div>
+        </form>
+
         <div class="grid-resenas" id="grid-resenas"></div>
+        <div class="ver-mas" id="ver-mas" hidden>
+          <button type="button" class="btn btn-negro">Ver más reseñas</button>
+        </div>
       </div>
     </section>
 
@@ -520,6 +618,9 @@
     <svg><use href="#i-wa"/></svg>
   </a>
 
+  <!-- ============ ANIMACIÓN DE FUEGO (fija al borde inferior) ============ -->
+  <canvas class="fuego" id="fuego" aria-hidden="true"></canvas>
+
   <script>
     /* =====================================================================
        CONFIGURACIÓN — cambia aquí los datos de tu taquería
@@ -535,6 +636,27 @@
         facebook: "https://facebook.com/",
         instagram: "https://instagram.com/",
         tiktok: "https://tiktok.com/"
+      },
+      /* RESEÑAS COMPARTIDAS (opcional, gratis con Supabase: https://supabase.com)
+         Si lo dejas vacío, las reseñas nuevas solo se guardan en el navegador de quien las escribe.
+         Para que TODOS los clientes las vean:
+         1. Crea un proyecto en Supabase y en "SQL Editor" ejecuta:
+
+            create table resenas (
+              id bigint generated always as identity primary key,
+              nombre text not null check (char_length(nombre) between 2 and 40),
+              estrellas int not null check (estrellas between 1 and 5),
+              texto text not null check (char_length(texto) between 10 and 500),
+              created_at timestamptz not null default now()
+            );
+            alter table resenas enable row level security;
+            create policy "leer" on resenas for select to anon using (true);
+            create policy "escribir" on resenas for insert to anon with check (true);
+
+         2. En Project Settings > API copia la "Project URL" y la clave "anon public" aquí abajo. */
+      supabase: {
+        url: "",       // ej. "https://abcdefgh.supabase.co"
+        anonKey: ""    // ej. "eyJhbGciOi..."
       },
       // Horario: [abre, cierra] en formato 24 h; null = cerrado. 0 = domingo
       horario: {
@@ -584,10 +706,11 @@
       { img: "img/galeria-6.jpg", alt: "Clientes disfrutando" }
     ];
 
+    /* Reseñas de EJEMPLO que se muestran junto con las de los clientes. Bórralas cuando tengas reales. */
     const RESENAS = [
-      { nombre: "Mariana G.", estrellas: 5, fecha: "Hace 1 semana", texto: "Los mejores tacos al pastor de la zona. La salsa verde está buenísima y te atienden rapidísimo." },
-      { nombre: "Jorge R.", estrellas: 5, fecha: "Hace 2 semanas", texto: "Pedí por WhatsApp y llegó todo calientito. Las gringas son una delicia." },
-      { nombre: "Ana L.", estrellas: 4, fecha: "Hace 1 mes", texto: "Muy buen sabor y precios justos. Los fines de semana se llena, pero vale la pena esperar." }
+      { nombre: "Mariana G.", estrellas: 5, fecha: "2026-11-10", texto: "Los mejores tacos al pastor de la zona. La salsa verde está buenísima y te atienden rapidísimo." },
+      { nombre: "Jorge R.", estrellas: 5, fecha: "2026-11-03", texto: "Pedí por WhatsApp y llegó todo calientito. Las gringas son una delicia." },
+      { nombre: "Ana L.", estrellas: 4, fecha: "2026-10-18", texto: "Muy buen sabor y precios justos. Los fines de semana se llena, pero vale la pena esperar." }
     ];
 
     /* =====================================================================
@@ -669,13 +792,136 @@
     $(".lightbox-cerrar").addEventListener("click", () => lightbox.close());
     lightbox.addEventListener("click", e => { if (e.target === lightbox) lightbox.close(); });
 
-    // Reseñas
-    $("#grid-resenas").innerHTML = RESENAS.map(r => `
-      <figure class="resena">
+    // ===================== Reseñas =====================
+    const Resenas = (() => {
+      const sb = CONFIG.supabase || {};
+      const compartidas = Boolean(sb.url && sb.anonKey);
+      const CLAVE = "resenas-taqueria";
+      const cabeceras = () => ({ apikey: sb.anonKey, Authorization: `Bearer ${sb.anonKey}`, "Content-Type": "application/json" });
+      const leerLocal = () => { try { return JSON.parse(localStorage.getItem(CLAVE)) || []; } catch { return []; } };
+
+      return {
+        compartidas,
+        async cargar() {
+          if (!compartidas) return leerLocal();
+          const r = await fetch(`${sb.url}/rest/v1/resenas?select=nombre,estrellas,texto,created_at&order=created_at.desc&limit=200`, { headers: cabeceras() });
+          if (!r.ok) throw new Error("No se pudieron cargar las reseñas");
+          return (await r.json()).map(x => ({ ...x, fecha: x.created_at }));
+        },
+        async guardar(resena) {
+          if (!compartidas) {
+            const todas = [resena, ...leerLocal()].slice(0, 200);
+            try { localStorage.setItem(CLAVE, JSON.stringify(todas)); } catch {}
+            return resena;
+          }
+          const r = await fetch(`${sb.url}/rest/v1/resenas`, {
+            method: "POST", headers: { ...cabeceras(), Prefer: "return=minimal" },
+            body: JSON.stringify({ nombre: resena.nombre, estrellas: resena.estrellas, texto: resena.texto })
+          });
+          if (!r.ok) throw new Error("No se pudo publicar la reseña");
+          return resena;
+        }
+      };
+    })();
+
+    function haceCuanto(fecha) {
+      const d = new Date(fecha); if (isNaN(d)) return "";
+      const dias = Math.floor((Date.now() - d) / 864e5);
+      if (dias < 1) return "Hoy";
+      if (dias === 1) return "Ayer";
+      if (dias < 7) return `Hace ${dias} días`;
+      if (dias < 30) { const s = Math.floor(dias / 7); return `Hace ${s} semana${s > 1 ? "s" : ""}`; }
+      if (dias < 365) { const m = Math.floor(dias / 30); return `Hace ${m} mes${m > 1 ? "es" : ""}`; }
+      const a = Math.floor(dias / 365); return `Hace ${a} año${a > 1 ? "s" : ""}`;
+    }
+
+    const tarjetaResena = (r, nueva = false) => `
+      <figure class="resena${nueva ? " nueva" : ""}">
         <div class="estrellas" role="img" aria-label="${r.estrellas} de 5 estrellas">${"★".repeat(r.estrellas)}<span class="vacia">${"★".repeat(5 - r.estrellas)}</span></div>
         <blockquote>“${esc(r.texto)}”</blockquote>
-        <figcaption><span class="avatar">${esc(r.nombre[0])}</span><span>${esc(r.nombre)}<small>${esc(r.fecha)}</small></span></figcaption>
-      </figure>`).join("");
+        <figcaption><span class="avatar">${esc(r.nombre.trim()[0].toUpperCase())}</span><span>${esc(r.nombre)}<small>${esc(haceCuanto(r.fecha))}</small></span></figcaption>
+      </figure>`;
+
+    let listaResenas = [...RESENAS];
+    let mostrando = 6;
+
+    function pintarResenas(nuevaArriba = false) {
+      listaResenas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      $("#grid-resenas").innerHTML = listaResenas.slice(0, mostrando)
+        .map((r, i) => tarjetaResena(r, nuevaArriba && i === 0)).join("");
+      $("#ver-mas").hidden = listaResenas.length <= mostrando;
+
+      const total = listaResenas.length;
+      const prom = total ? listaResenas.reduce((s, r) => s + r.estrellas, 0) / total : 0;
+      const promTxt = prom.toFixed(1).replace(".0", "");
+      $("#promedio-estrellas span").style.width = `${(prom / 5) * 100}%`;
+      $("#promedio-estrellas").setAttribute("aria-label", `${promTxt} de 5 estrellas`);
+      $("#promedio-texto").textContent = total
+        ? `${promTxt} de 5 · ${total} reseña${total === 1 ? "" : "s"}`
+        : "Sé el primero en dejar una reseña";
+    }
+    $("#ver-mas button").addEventListener("click", () => { mostrando += 6; pintarResenas(); });
+
+    pintarResenas();
+    Resenas.cargar()
+      .then(guardadas => { listaResenas = [...guardadas, ...RESENAS]; pintarResenas(); })
+      .catch(() => {});
+
+    // Formulario
+    const form = $("#form-resena"), abrirForm = $("#abrir-form");
+    const errorForm = $("#form-error"), okForm = $("#form-ok");
+    const NIVELES = { 1: "Malo", 2: "Regular", 3: "Bueno", 4: "Muy bueno", 5: "¡Excelente!" };
+
+    function mostrarForm(ver) {
+      form.hidden = !ver;
+      abrirForm.setAttribute("aria-expanded", ver);
+      abrirForm.closest(".resenas-acciones").hidden = ver;
+      if (ver) { okForm.hidden = true; $("#e5").focus({ preventScroll: true }); form.scrollIntoView({ block: "center", behavior: "smooth" }); }
+    }
+    abrirForm.addEventListener("click", () => mostrarForm(true));
+    $("#cancelar-resena").addEventListener("click", () => { form.reset(); actualizarForm(); mostrarForm(false); });
+
+    function actualizarForm() {
+      const sel = form.querySelector("input[name=estrellas]:checked");
+      $("#texto-calificacion").textContent = sel ? NIVELES[sel.value] : "";
+      $("#contador").textContent = `${$("#r-texto").value.length} / 500`;
+    }
+    form.addEventListener("input", actualizarForm);
+    form.addEventListener("change", actualizarForm);
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const datos = new FormData(form);
+      const error = msg => { errorForm.textContent = msg; errorForm.hidden = false; };
+      errorForm.hidden = true;
+
+      if (datos.get("sitio")) return;                       // robot de spam
+      const estrellas = Number(datos.get("estrellas"));
+      const nombre = String(datos.get("nombre") || "").trim().replace(/\s+/g, " ");
+      const texto = String(datos.get("texto") || "").trim();
+      if (!estrellas) return error("Elige una calificación de 1 a 5 estrellas.");
+      if (nombre.length < 2) return error("Escribe tu nombre.");
+      if (texto.length < 10) return error("Tu comentario debe tener al menos 10 letras.");
+
+      let ultima = 0; try { ultima = Number(localStorage.getItem("resena-ultima")) || 0; } catch {}
+      if (Date.now() - ultima < 60000) return error("Espera un minuto antes de publicar otra reseña.");
+
+      const boton = $("#enviar-resena");
+      boton.disabled = true; boton.textContent = "Publicando…";
+      try {
+        const resena = await Resenas.guardar({ nombre, estrellas, texto, fecha: new Date().toISOString() });
+        try { localStorage.setItem("resena-ultima", String(Date.now())); } catch {}
+        listaResenas.unshift(resena);
+        pintarResenas(true);
+        form.reset(); actualizarForm(); mostrarForm(false);
+        okForm.hidden = false;
+        okForm.scrollIntoView({ block: "center", behavior: "smooth" });
+      } catch {
+        error("No pudimos publicar tu reseña. Revisa tu conexión e inténtalo de nuevo.");
+      } finally {
+        boton.disabled = false; boton.textContent = "Publicar reseña";
+      }
+    });
 
     // Horario + estado abierto/cerrado
     const DIAS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -729,6 +975,105 @@
 
     // Fotos de relleno
     $$("img").forEach(activarRelleno);
+
+    // ===================== Fuego / carbones encendidos =====================
+    (() => {
+      const canvas = $("#fuego");
+      const ctx = canvas.getContext("2d");
+      const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let W = 0, H = 0, dpr = 1, carbones = [], llamas = [], chispas = [];
+
+      function preparar() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = canvas.clientWidth; H = canvas.clientHeight;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        // Cama de carbones a lo largo del borde inferior
+        carbones = [];
+        const n = Math.ceil(W / 14);
+        for (let i = 0; i < n; i++) {
+          carbones.push({
+            x: (i + Math.random() * .8) * (W / n), y: H + 2 - Math.random() * 8,
+            r: 8 + Math.random() * 9, fase: Math.random() * Math.PI * 2, vel: .6 + Math.random() * 1.4
+          });
+        }
+        llamas = []; chispas = [];
+      }
+
+      const nuevaLlama = () => ({
+        x: Math.random() * W, y: H - Math.random() * 8,
+        vx: (Math.random() - .5) * .3, vy: -(0.7 + Math.random() * 1.3),
+        r: 14 + Math.random() * 20, vida: 0, max: 45 + Math.random() * 45
+      });
+      const nuevaChispa = () => ({
+        x: Math.random() * W, y: H - 12,
+        vx: (Math.random() - .5) * .8, vy: -(1.2 + Math.random() * 2.2),
+        vida: 0, max: 60 + Math.random() * 80, r: .8 + Math.random() * 1.6
+      });
+
+      function dibujar(t) {
+        ctx.clearRect(0, 0, W, H);
+
+        // Resplandor general que se desvanece hacia arriba
+        const g = ctx.createLinearGradient(0, H, 0, 0);
+        g.addColorStop(0, "rgba(255,90,0,.6)");
+        g.addColorStop(.3, "rgba(255,120,0,.18)");
+        g.addColorStop(1, "rgba(255,120,0,0)");
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+        ctx.globalCompositeOperation = "lighter";
+
+        // Llamas
+        if (!quieto) {
+          const objetivo = Math.min(220, W / 5);
+          while (llamas.length < objetivo) llamas.push(nuevaLlama());
+          if (chispas.length < W / 25 && Math.random() < .35) chispas.push(nuevaChispa());
+        }
+        llamas = llamas.filter(p => p.vida < p.max);
+        for (const p of llamas) {
+          p.vida++; p.x += p.vx + Math.sin((p.vida + p.x) * .05) * .3; p.y += p.vy;
+          const k = p.vida / p.max;                          // 0 → 1
+          const r = p.r * (1 - k * .7);
+          const alfa = Math.sin(k * Math.PI) * .7;
+          const rg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
+          const color = k < .3 ? "255,230,120" : k < .6 ? "255,140,20" : "220,50,10";
+          rg.addColorStop(0, `rgba(${color},${alfa})`);
+          rg.addColorStop(1, `rgba(${color},0)`);
+          ctx.fillStyle = rg;
+          ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fill();
+        }
+
+        // Chispas que suben
+        chispas = chispas.filter(c => c.vida < c.max && c.y > -5);
+        for (const c of chispas) {
+          c.vida++; c.x += c.vx + Math.sin(c.vida * .1) * .4; c.y += c.vy; c.vy *= .995;
+          const a = 1 - c.vida / c.max;
+          ctx.fillStyle = `rgba(255,${180 + Math.random() * 60 | 0},80,${a})`;
+          ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2); ctx.fill();
+        }
+
+        ctx.globalCompositeOperation = "source-over";
+
+        // Carbones encendidos que parpadean
+        for (const c of carbones) {
+          const brillo = .6 + .4 * Math.sin(t * .001 * c.vel + c.fase);
+          ctx.fillStyle = "rgba(40,12,4,.9)";
+          ctx.beginPath(); ctx.ellipse(c.x, c.y + 3, c.r, c.r * .6, 0, 0, Math.PI * 2); ctx.fill();
+          const rg = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r);
+          rg.addColorStop(0, `rgba(255,${170 + 80 * brillo | 0},90,1)`);
+          rg.addColorStop(.45, `rgba(255,${60 + 60 * brillo | 0},10,${.7 + .3 * brillo})`);
+          rg.addColorStop(1, "rgba(120,20,5,0)");
+          ctx.fillStyle = rg;
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, c.r, c.r * .7, 0, 0, Math.PI * 2); ctx.fill();
+        }
+
+        if (!quieto) requestAnimationFrame(dibujar);
+      }
+
+      preparar();
+      addEventListener("resize", () => { const w = canvas.clientWidth; if (w !== W || canvas.clientHeight !== H) preparar(); });
+      requestAnimationFrame(dibujar);
+    })();
   </script>
 </body>
 </html>
